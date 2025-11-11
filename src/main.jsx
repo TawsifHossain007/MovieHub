@@ -12,11 +12,13 @@ import Register from "./Components/Register/Register";
 import AuthRoot from "./Layout/AuthRoot";
 import { ThemeProvider } from "./Components/ThemeContext/ThemeContext";
 import AuthProvider from "./AuthProvider/AuthProvider";
+import ErrorApps from "./Components/ErrorPage/ErrorPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     Component: Root,
+    errorElement: <ErrorApps></ErrorApps>,
     children: [
       {
         index: true,

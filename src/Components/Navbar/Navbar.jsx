@@ -46,7 +46,7 @@ const Navbar = () => {
   );
 
   return (
-    <div className="navbar shadow-md backdrop-blur-md border-b border-base-300 w-11/12 mx-auto">
+    <div className="navbar shadow-md backdrop-blur-md border-b border-base-300 md:w-11/12 mx-auto">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -139,16 +139,16 @@ const Navbar = () => {
             Logout
           </button>
         ) : (
-          <div>
+          <div className="flex items-center justify-center gap-2 md:gap-4">
             <Link
               to={"/auth/login"}
-              className="btn btn-primary text-white ml-0 md:ml-5"
+              className="btn btn-primary text-white"
             >
               Login
             </Link>
             <Link
               to={"/auth/register"}
-              className="btn btn-primary text-white ml-0 md:ml-2"
+              className="btn btn-primary text-white ml-0"
             >
               Register
             </Link>
