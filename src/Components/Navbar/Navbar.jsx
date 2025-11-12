@@ -38,11 +38,18 @@ const Navbar = () => {
       <li>
         <NavLink to="/allMovies">All Movies</NavLink>
       </li>
-      {user && (
+      {user &&  <>
         <li>
           <NavLink to="/myCollection">My Collection</NavLink>
         </li>
-      )}
+        <li>
+          <NavLink to="/addMovie">Add a Movie</NavLink>
+        </li>
+        <li>
+          <NavLink to="/updateMovie">Update Movie</NavLink>
+        </li>
+        </>
+      }
     </>
   );
 

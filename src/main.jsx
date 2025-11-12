@@ -14,6 +14,8 @@ import { ThemeProvider } from "./Components/ThemeContext/ThemeContext";
 import AuthProvider from "./AuthProvider/AuthProvider";
 import ErrorApps from "./Components/ErrorPage/ErrorPage";
 import MovieDetails from "./Components/MovieDetails/MovieDetails";
+import AddMovie from "./Pages/AddMovie/AddMovie";
+import UpdateMovie from "./Pages/UpdateMovie/UpdateMovie";
 
 const router = createBrowserRouter([
   {
@@ -35,8 +37,16 @@ const router = createBrowserRouter([
         Component: MyCollection,
       },
       {
-        path: "movieDetails",
+        path: "movieDetails/:id",
         Component: MovieDetails
+      },
+      {
+        path: "/addMovie",
+        Component: AddMovie
+      },
+      {
+        path: "/updateMovie",
+        Component: UpdateMovie
       }
     ],
   },

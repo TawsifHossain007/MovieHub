@@ -17,7 +17,7 @@ const MovieCard = ({ movie }) => {
           <span className="font-semibold text-yellow-500">⭐ {movie.rating}</span>
           <span className="text-sm text-black">{movie.duration} min</span>
         </div>
-        <Link to={"/movieDetails"} className='btn w-full bg-white text-blue-500 mt-5 hover:bg-blue-500 hover:text-white'>View Details</Link>
+        <Link to={`/movieDetails/${movie._id}`} className='btn w-full bg-white text-blue-500 mt-5 hover:bg-blue-500 hover:text-white'>View Details</Link>
       </div>
     </div>
   );
