@@ -1,16 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
+import Loading from "../Loading/Loading";
+
 
 const Banner = () => {
   const [movies, setMovies] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios
       .get("http://localhost:3000/movies")
-      .then((res) => setMovies(res.data))
-      .catch((err) => console.error(err));
+      .then((res) => {
+        setMovies(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -20,10 +29,18 @@ const Banner = () => {
     return () => clearInterval(interval);
   }, [movies]);
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-[400px]">
+        <Loading />
+      </div>
+    );
+  }
+
   if (movies.length === 0)
     return (
       <div className="flex justify-center items-center h-[400px]">
-        <p className="text-gray-400 text-lg">Loading movies...</p>
+        <p className="text-gray-400 text-lg">No movies found.</p>
       </div>
     );
 

@@ -17,6 +17,7 @@ import MovieDetails from "./Components/MovieDetails/MovieDetails";
 import AddMovie from "./Pages/AddMovie/AddMovie";
 import UpdateMovie from "./Pages/UpdateMovie/UpdateMovie";
 import MyCollection from "./Pages/MyCollection";
+import PrivateRoute from "./Components/PrivateRoute/PrivateRoute";
 
 const router = createBrowserRouter([
   {
@@ -43,15 +44,15 @@ const router = createBrowserRouter([
       },
       {
         path: "/addMovie",
-        Component: AddMovie
+        element: <PrivateRoute><AddMovie></AddMovie></PrivateRoute>
       },
       {
         path: "/movies/update/:id",
-        Component: UpdateMovie
+        element: <PrivateRoute><UpdateMovie></UpdateMovie></PrivateRoute>
       },
       {
         path: "/myCollection",
-        Component: MyCollection
+        element: <PrivateRoute><MyCollection></MyCollection></PrivateRoute>
       }
     ],
   },

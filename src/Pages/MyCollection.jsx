@@ -3,11 +3,13 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { AuthContext } from "../AuthProvider/AuthProvider";
 import { useNavigate } from "react-router";
+import Loading from "../Components/Loading/Loading";
 
 const MyMovies = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate()
   const [myMovies, setMyMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchMyMovies = async () => {
@@ -16,6 +18,9 @@ const MyMovies = () => {
            `http://localhost:3000/movies/user?email=${user.email}`
         );
         setMyMovies(res.data);
+        setLoading(false);
+      } else {
+        setLoading(false);
       }
     };
     fetchMyMovies();
@@ -43,6 +48,14 @@ const MyMovies = () => {
     });
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loading />
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-6xl mx-auto p-6   bg-base-100">
       {myMovies.length === 0 ? (
@@ -56,7 +69,7 @@ const MyMovies = () => {
   {myMovies.map((movie) => (
     <div
       key={movie._id}
-      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
+      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 border-2 border-blue-500"
     >
       <div className="w-full h-64 overflow-hidden">
         <img

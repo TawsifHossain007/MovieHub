@@ -2,10 +2,12 @@ import React, { use, useEffect, useState } from "react";
 import { AuthContext } from "../AuthProvider/AuthProvider";
 import Swal from "sweetalert2";
 import axios from "axios";
+import Loading from "../Components/Loading/Loading";
 
 const MyWishlist = () => {
   const [collection, setCollection] = useState([]);
   const { user } = use(AuthContext);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (user?.email) {
@@ -13,7 +15,10 @@ const MyWishlist = () => {
         .then((res) => res.json())
         .then((data) => {
           setCollection(data);
+          setLoading(false);
         });
+    } else {
+      setLoading(false);
     }
   }, [user?.email]);
 
@@ -46,12 +51,19 @@ const MyWishlist = () => {
     });
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loading />
+      </div>
+    );
+  }
+
   return (
     <div className="bg-base-100 min-h-screen">
       <div className="w-11/12 mx-auto">
         <div className="overflow-x-auto">
           <table className="table">
-            {/* head */}
             <thead>
               <tr>
                 <th>SL No.</th>
