@@ -6,7 +6,7 @@ import { RouterProvider } from "react-router/dom";
 import Root from "./Layout/Root";
 import Home from "./Pages/Home";
 import AllMovies from "./Pages/AllMovies";
-import MyCollection from "./Pages/MyCollection";
+import MyWishlist from "./Pages/MyWishList";
 import Login from "./Components/Login/Login";
 import Register from "./Components/Register/Register";
 import AuthRoot from "./Layout/AuthRoot";
@@ -16,6 +16,7 @@ import ErrorApps from "./Components/ErrorPage/ErrorPage";
 import MovieDetails from "./Components/MovieDetails/MovieDetails";
 import AddMovie from "./Pages/AddMovie/AddMovie";
 import UpdateMovie from "./Pages/UpdateMovie/UpdateMovie";
+import MyCollection from "./Pages/MyCollection";
 
 const router = createBrowserRouter([
   {
@@ -33,8 +34,8 @@ const router = createBrowserRouter([
         Component: AllMovies,
       },
       {
-        path: "/myCollection",
-        Component: MyCollection,
+        path: "/MyWishlist",
+        Component: MyWishlist,
       },
       {
         path: "movieDetails/:id",
@@ -45,8 +46,12 @@ const router = createBrowserRouter([
         Component: AddMovie
       },
       {
-        path: "/updateMovie",
+        path: "/movies/update/:id",
         Component: UpdateMovie
+      },
+      {
+        path: "/myCollection",
+        Component: MyCollection
       }
     ],
   },

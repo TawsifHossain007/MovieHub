@@ -55,7 +55,7 @@ const MovieDetails = () => {
       Swal.fire({
         position: "center",
         icon: "success",
-        title: "Added to Collection",
+        title: "Added to My Watchlist",
         showConfirmButton: false,
         timer: 1500,
       });
@@ -126,7 +126,7 @@ const MovieDetails = () => {
                 : "bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-purple-600 hover:to-indigo-500 text-white"
             }`}
           >
-            {isInCollection ? "Added to Collection" : "Add to Collection"}
+            {isInCollection ? "Added to Watchlist" : "Add to Watchlist"}
           </button>
         </div>
       </div>

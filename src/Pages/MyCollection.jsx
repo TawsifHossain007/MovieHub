@@ -1,110 +1,97 @@
-import React, { use, useEffect, useState } from "react";
-import { AuthContext } from "../AuthProvider/AuthProvider";
-import Swal from "sweetalert2";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
+import { AuthContext } from "../AuthProvider/AuthProvider";
+import { useNavigate } from "react-router";
 
-const MyCollection = () => {
-  const [collection, setCollection] = useState([]);
-  const { user } = use(AuthContext);
+const MyMovies = () => {
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate()
+  const [myMovies, setMyMovies] = useState([]);
 
   useEffect(() => {
-    if (user?.email) {
-      fetch(`http://localhost:3000/collection?email=${user.email}`)
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          setCollection(data);
-        });
-    }
+    const fetchMyMovies = async () => {
+      if (user?.email) {
+        const res = await axios.get(
+           `http://localhost:3000/movies/user?email=${user.email}`
+        );
+        setMyMovies(res.data);
+      }
+    };
+    fetchMyMovies();
   }, [user?.email]);
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     Swal.fire({
       title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      text: "This movie will be deleted from everywhere!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        axios.delete(`http://localhost:3000/collection/${id}`).then((res) => {
-          if (res.data.deletedCount) {
-            Swal.fire({
-              title: "Deleted!",
-              text: "Your Collection has been deleted.",
-              icon: "success",
-            });
+        try {
+          await axios.delete(`http://localhost:3000/movies/${id}?email=${user.email}`);
+          setMyMovies(myMovies.filter((movie) => movie._id !== id));
 
-            const remainingCollection = collection.filter(
-              (coll) => coll._id !== id
-            );
-            setCollection(remainingCollection);
-          }
-        });
+          Swal.fire("Deleted!", "Movie has been deleted everywhere.", "success");
+        } catch (err) {
+          console.error(err);
+          Swal.fire("Error", "Could not delete movie.", "error");
+        }
       }
     });
   };
 
   return (
-    <div className="bg-base-100 min-h-screen">
-      <div className="w-11/12 mx-auto">
-        <div className="overflow-x-auto">
-          <table className="table">
-            {/* head */}
-            <thead>
-              <tr>
-                <th>SL No.</th>
-                <th>Movie</th>
-                <th>Director</th>
-                <th>Release year</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {collection.map((singleCol, index) => (
-                <tr key={singleCol._id}>
-                  <th>{index + 1}</th>
-                  <td>
-                    <div className="flex items-center gap-3">
-                      <div className="avatar">
-                        <div className="mask mask-squircle h-12 w-12">
-                          <img
-                            src={singleCol.posterUrl}
-                            alt="Avatar Tailwind CSS Component"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <div className="font-bold">{singleCol.title}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    {singleCol.director}
-                    <br />
-                    <span className="badge badge-ghost badge-sm">
-                      {singleCol.genre}
-                    </span>
-                  </td>
-                  <td>{singleCol.releaseYear}</td>
-                  <td>
-                    <button
-                      onClick={() => handleDelete(singleCol._id)}
-                      className="btn btn-primary"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    <div className="max-w-6xl mx-auto p-6   bg-base-100">
+      {myMovies.length === 0 ? (
+        <div className="flex items-center justify-center min-h-screen">
+                 <p className="text-gray-400">You haven’t added any movies yet.</p>
         </div>
+       
+      ) : (
+        
+       <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+  {myMovies.map((movie) => (
+    <div
+      key={movie._id}
+      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
+    >
+      <div className="w-full h-64 overflow-hidden">
+        <img
+          src={movie.posterUrl}
+          alt={movie.title}
+          className="w-full h-full object-cover"
+        />
       </div>
+
+      <div className="p-4">
+        <h2 className="text-lg font-semibold text-gray-800">{movie.title}</h2>
+        <p className="text-gray-500 text-sm mt-1">{movie.genre}</p>
+        <p className="text-gray-400 text-sm mt-1">
+          {movie.releaseYear} • {movie.language}
+        </p>
+
+        <button
+          onClick={() => handleDelete(movie._id)}
+          className="mt-3 w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-md text-sm transition-colors duration-200"
+        >
+          Delete
+        </button>
+        <button
+                  onClick={() => navigate(`/movies/update/${movie._id}`)}
+                  className="mt-2 w-full bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded-md text-sm transition-colors duration-200"
+                >
+                  Update
+                </button>
+      </div>
+    </div>
+  ))}
+</div>
+      )}
     </div>
   );
 };
 
-export default MyCollection;
+export default MyMovies;
