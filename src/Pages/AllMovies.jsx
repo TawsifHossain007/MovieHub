@@ -31,10 +31,12 @@ const AllMovies = () => {
   }
 
   const filteredMovies = movies.filter((movie) => {
-    const genreMatch = genreFilter ? movie.genre.includes(genreFilter) : true;
-    const ratingMatch = ratingFilter ? movie.rating >= Number(ratingFilter) : true;
-    return genreMatch && ratingMatch;
-  });
+  const genreMatch = genreFilter 
+    ? movie.genre.toLowerCase().includes(genreFilter.toLowerCase()) 
+    : true;
+  const ratingMatch = ratingFilter ? movie.rating >= Number(ratingFilter) : true;
+  return genreMatch && ratingMatch;
+});
 
   return (
     <div className='bg-base-100 min-h-screen w-11/12 mx-auto mt-20'>
