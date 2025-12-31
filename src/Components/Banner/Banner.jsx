@@ -11,7 +11,7 @@ const Banner = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/movies")
+      .get("https://assignment-10-server-coral-theta.vercel.app/movies")
       .then((res) => {
         setMovies(res.data);
         setLoading(false);

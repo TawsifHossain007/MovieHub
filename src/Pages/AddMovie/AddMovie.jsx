@@ -27,7 +27,7 @@ const AddMovie = () => {
     };
 
     try {
-      const res = await axios.post("http://localhost:3000/movies", newMovie);
+      const res = await axios.post("https://assignment-10-server-coral-theta.vercel.app/movies", newMovie);
 
       if (res.data.insertedId) {
         Swal.fire({

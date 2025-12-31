@@ -14,14 +14,14 @@ const MovieDetails = () => {
   useEffect(() => {
     const fetchMovie = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/movies/${id}`);
+        const response = await axios.get(`https://assignment-10-server-coral-theta.vercel.app/movies/${id}`);
         setMovie(response.data);
         setLoading(false);
 
         // After loading movie, check if it exists in collection
         if (user?.email) {
           const collectionRes = await axios.get(
-            `http://localhost:3000/collection?email=${user.email}`
+            `https://assignment-10-server-coral-theta.vercel.app/collection?email=${user.email}`
           );
 
           const exists = collectionRes.data.some(
@@ -49,7 +49,7 @@ const MovieDetails = () => {
     };
 
     try {
-      await axios.post("http://localhost:3000/collection", newCollection);
+      await axios.post("https://assignment-10-server-coral-theta.vercel.app/collection", newCollection);
       setIsInCollection(true);
 
       Swal.fire({

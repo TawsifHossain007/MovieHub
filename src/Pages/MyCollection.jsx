@@ -16,7 +16,7 @@ const MyMovies = () => {
     const fetchMyMovies = async () => {
       if (user?.email) {
         const res = await axios.get(
-          `http://localhost:3000/movies/user?email=${user.email}`
+          `https://assignment-10-server-coral-theta.vercel.app/movies/user?email=${user.email}`
         );
         setMyMovies(res.data);
         setLoading(false);
@@ -37,7 +37,7 @@ const MyMovies = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`http://localhost:3000/movies/${id}?email=${user.email}`);
+          await axios.delete(`https://assignment-10-server-coral-theta.vercel.app/movies/${id}?email=${user.email}`);
           setMyMovies(myMovies.filter((movie) => movie._id !== id));
           Swal.fire("Deleted!", "Movie has been deleted everywhere.", "success");
         } catch (err) {

@@ -21,7 +21,7 @@ const Stats = () => {
   ];
 
   axios
-    .get("http://localhost:3000/movies")
+    .get("https://assignment-10-server-coral-theta.vercel.app/movies")
     .then((res) => {
       const data = res.data;
       setStats(data);
@@ -31,7 +31,7 @@ const Stats = () => {
     });
 
   axios
-    .get("http://localhost:3000/movies/latest")
+    .get("https://assignment-10-server-coral-theta.vercel.app/movies/latest")
     .then((res) => {
       const data = res.data;
       setLatest(data);

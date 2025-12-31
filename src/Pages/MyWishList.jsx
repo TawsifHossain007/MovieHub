@@ -12,7 +12,7 @@ const MyWishlist = () => {
 
   useEffect(() => {
     if (user?.email) {
-      fetch(`http://localhost:3000/collection?email=${user.email}`)
+      fetch(`https://assignment-10-server-coral-theta.vercel.app/collection?email=${user.email}`)
         .then((res) => res.json())
         .then((data) => {
           setCollection(data);
@@ -34,7 +34,7 @@ const MyWishlist = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.delete(`http://localhost:3000/collection/${id}`).then((res) => {
+        axios.delete(`https://assignment-10-server-coral-theta.vercel.app/collection/${id}`).then((res) => {
           if (res.data.deletedCount) {
             Swal.fire({
               title: "Deleted!",

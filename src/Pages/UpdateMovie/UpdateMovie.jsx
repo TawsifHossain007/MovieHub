@@ -23,7 +23,7 @@ const UpdateMovie = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/movies/${id}`)
+      .get(`https://assignment-10-server-coral-theta.vercel.app/movies/${id}`)
       .then((res) => setMovie(res.data))
       .catch((err) => console.error(err));
   }, [id]);
@@ -36,7 +36,7 @@ const UpdateMovie = () => {
   const handleUpdateMovie = async (e) => {
     e.preventDefault();
     try {
-      await axios.patch(`http://localhost:3000/movies/${id}`, movie);
+      await axios.patch(`https://assignment-10-server-coral-theta.vercel.app/movies/${id}`, movie);
       Swal.fire({
         icon: "success",
         title: "Movie updated successfully",
