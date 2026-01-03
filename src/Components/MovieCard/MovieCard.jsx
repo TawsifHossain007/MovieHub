@@ -10,10 +10,8 @@ const MovieCard = ({ movie }) => {
       <div className="card-body">
         <h2 className="card-title text-lg font-bold">{movie.title}</h2>
         <p className="text-sm font-medium text-gray-800">{movie.genre} • {movie.releaseYear}</p>
-        <p className="text-sm mt-2"><span className="font-semibold">Director:</span> {movie.director}</p>
-        <p className="text-sm"><span className="font-semibold">Cast:</span> {movie.cast}</p>
-        <p className="text-sm mt-2 line-clamp-3">{movie.plotSummary}</p>
-        <div className="flex justify-between items-center mt-3">
+       
+        <div className="flex justify-between items-center mt-5">
           <span className="font-semibold text-yellow-500">⭐ {movie.rating}</span>
           <span className="text-sm text-black">{movie.duration} min</span>
         </div>

@@ -5,12 +5,14 @@ import { AuthContext } from "../AuthProvider/AuthProvider";
 import { useNavigate } from "react-router";
 import Loading from "../Components/Loading/Loading";
 import { motion } from "framer-motion";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const MyMovies = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [myMovies, setMyMovies] = useState([]);
   const [loading, setLoading] = useState(true);
+  const axiosSecure = useAxiosSecure()
 
   useEffect(() => {
     const fetchMyMovies = async () => {
@@ -37,7 +39,7 @@ const MyMovies = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`https://assignment-10-server-coral-theta.vercel.app/movies/${id}?email=${user.email}`);
+          await axiosSecure.delete(`/movies/${id}?email=${user.email}`);
           setMyMovies(myMovies.filter((movie) => movie._id !== id));
           Swal.fire("Deleted!", "Movie has been deleted everywhere.", "success");
         } catch (err) {
@@ -85,7 +87,7 @@ const MyMovies = () => {
           {myMovies.map((movie) => (
             <div
               key={movie._id}
-              className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 border-2 border-blue-500"
+              className="rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 border-2 border-blue-500"
             >
               <div className="w-full h-64 overflow-hidden">
                 <img

@@ -83,7 +83,7 @@ const AllMovies = () => {
         />
       </div>
 
-      <div className='grid grid-cols-1 md:grid-cols-3 gap-10 mt-10 mb-20'>
+      <div className='grid grid-cols-1 md:grid-cols-4 gap-10 mt-10 mb-20'>
         {filteredMovies.length > 0 ? (
           filteredMovies.map(movie => <MovieCard key={movie._id} movie={movie} />)
         ) : (

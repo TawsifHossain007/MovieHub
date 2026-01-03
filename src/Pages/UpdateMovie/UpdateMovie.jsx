@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const UpdateMovie = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure()
 
   const [movie, setMovie] = useState({
     title: "",
@@ -36,12 +38,12 @@ const UpdateMovie = () => {
   const handleUpdateMovie = async (e) => {
     e.preventDefault();
     try {
-      await axios.patch(`https://assignment-10-server-coral-theta.vercel.app/movies/${id}`, movie);
+      await axiosSecure.patch(`/movies/${id}`, movie);
       Swal.fire({
         icon: "success",
         title: "Movie updated successfully",
         showConfirmButton: true,
-      }).then(() => navigate("/myCollection"));
+      }).then(() => navigate("/dashboard/myCollection"));
     } catch (err) {
       Swal.fire({
         icon: "error",

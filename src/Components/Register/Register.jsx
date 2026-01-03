@@ -1,73 +1,71 @@
-import { Eye, EyeOff } from "lucide-react";
-import React, { use, useState } from "react";
+import React, { use } from "react";
+import { useForm } from "react-hook-form";
+
 import { Link, useNavigate } from "react-router";
-import { AuthContext } from "../../AuthProvider/AuthProvider";
+
 import Swal from "sweetalert2";
+import axios from "axios";
+import SocialLogin from "./SocialLogin/SocialLogin";
+import { AuthContext } from "../../AuthProvider/AuthProvider";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { motion } from "framer-motion";
 
 const Register = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
   const navigate = useNavigate();
+  const { createUser, updateUser } = use(AuthContext);
+  const axiosSecure = useAxiosSecure();
 
-  const { createUser, setUser, handleGoogleSignIn, updateUser } =
-    use(AuthContext);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const form = e.target;
-    const name = form.name.value;
-    const photoURL = form.PhotoURL.value;
-    const email = form.email.value;
-    const password = form.password.value;
-
-    if (!/[A-Z]/.test(password)) {
-      setError("Password must contain at least one uppercase letter");
-      return;
-    }
-    if (!/[a-z]/.test(password)) {
-      setError("Password must contain at least one lowercase letter");
-      return;
-    }
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long");
-      return;
-    }
-
-    createUser(email, password)
-      .then((res) => {
-        const user = res.user;
-        updateUser({ displayName: name, photoURL: photoURL })
-          .then(() => {
-            setUser({ ...user, displayName: name, photoURL: photoURL });
-            Swal.fire({
-              position: "center",
-              icon: "success",
-              title: "Registration Successful",
-              showConfirmButton: false,
-              timer: 1500,
-            });
-            navigate("/");
-            form.reset();
-          })
-          .catch((err) => {
-            setError(err.code);
-            setUser(user);
-          });
-      })
-      .catch((err) => {
-        setError(err.code);
-      });
-  };
-
-  const handleGoogle = () => {
-    handleGoogleSignIn()
+  const handleRegistration = (data) => {
+    const profileImg = data.photo[0];
+    createUser(data.email, data.password)
       .then(() => {
+        //store image and get photoURL
+        const formdata = new FormData();
+        formdata.append("image", profileImg);
+
+        const ImageApiURL = `https://api.imgbb.com/1/upload?&key=${
+          import.meta.env.VITE_Image_Host_Key
+        }`;
+        axios.post(ImageApiURL, formdata).then((res) => {
+          const photoURL = res.data.data.url;
+
+          //create user in database
+          const userInfo = {
+            email: data.email,
+            displayName: data.name,
+            photoURL: photoURL,
+          };
+
+          axiosSecure
+            .post("/users", userInfo)
+            .then(() => {})
+            .catch((err) => {
+              console.log(err);
+            });
+
+          //update user profile in firebase
+          const userProfile = {
+            displayName: data.name,
+            photoURL: photoURL,
+          };
+
+          updateUser(userProfile)
+            .then(() => {})
+            .catch((err) => {
+              console.log(err);
+            });
+        });
+
         Swal.fire({
           position: "center",
           icon: "success",
-          title: "Logged In Successfully",
+          title: "Registered Successfully",
           showConfirmButton: false,
           timer: 1500,
         });
@@ -75,132 +73,109 @@ const Register = () => {
       })
       .catch((err) => {
         console.log(err);
-        setError(err.code);
       });
-  };
-
-  const handleTogglePasswordShow = (event) => {
-    event.preventDefault();
-    setShowPassword(!showPassword);
   };
 
   return (
     <motion.div
-      className="card bg-[#2563EB] w-full max-w-sm shrink-0 shadow-2xl mx-auto mt-20"
-      initial={{ opacity: 0, y: 60 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.8,
-        ease: "easeOut",
-        type: "spring",
-        stiffness: 60,
-      }}
-    >
-      <h1 className="text-center font-semibold text-[25px] pt-4 text-white">
-        Please Register
-      </h1>
-      <div className="card-body">
-        <form onSubmit={handleSubmit} className="fieldset">
+          className="card bg-linear-to-b from-blue-400 via-blue-600 to-blue-700 w-full mx-auto max-w-sm shrink-0 shadow-2xl p-5"
+          initial={{ opacity: 0, y: 60 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.8,
+            ease: "easeOut",
+            type: "spring",
+            stiffness: 60,
+          }}
+        >
+      <h3 className="text-center font-semibold text-3xl">
+        Welcome to MovieHub
+      </h3>
+      <p className="text-center pt-3">Please Register</p>
+      <form className="card-body" onSubmit={handleSubmit(handleRegistration)}>
+        <fieldset className="fieldset">
+          {/* name */}
           <label className="label">Name</label>
           <input
-            required
-            name="name"
             type="text"
-            className="input bg-white text-black dark:bg-gray-700 dark:text-white"
-            placeholder="Name"
+            {...register("name", { required: true })}
+            className="input bg-white text-black dark:bg-gray-300 dark:text-black"
+            placeholder="Your Name"
           />
+          {errors.name?.type === "required" && (
+            <p className="text-red-200 text-sm font-medium mt-1">
+              Name is Required
+            </p>
+          )}
 
-          <label className="label">Photo URL</label>
+          {/* Photo */}
+          <label className="label">Photo</label>
           <input
-            required
-            name="PhotoURL"
-            type="text"
-            className="input bg-white text-black dark:bg-gray-700 dark:text-white"
-            placeholder="Photo URL"
+            type="file"
+            {...register("photo", { required: true })}
+            className="file-input bg-white text-black dark:bg-gray-300 dark:text-black"
+            placeholder="Your Photo"
           />
+          {errors.photo?.type === "required" && (
+            <p className="text-red-200 text-sm font-medium mt-1">
+              Photo is Required
+            </p>
+          )}
 
+          {/* email */}
           <label className="label">Email</label>
           <input
-            required
-            name="email"
             type="email"
-            className="input bg-white text-black dark:bg-gray-700 dark:text-white"
+            {...register("email", { required: true })}
+            className="input bg-white text-black dark:bg-gray-300 dark:text-black"
             placeholder="Email"
           />
+          {errors.email?.type === "required" && (
+            <p className="text-red-200 text-sm font-medium mt-1">
+              Email is Required
+            </p>
+          )}
 
+          {/* password */}
           <label className="label">Password</label>
-
-          {error && <p className="text-red-600 font-medium">!!! {error}</p>}
-
-          <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              className="input bg-white text-black dark:bg-gray-700 dark:text-white"
-              placeholder="Password"
-            />
-            <button
-              onClick={handleTogglePasswordShow}
-              className="btn btn-xs top-2 right-5 absolute"
-            >
-              {showPassword ? <Eye /> : <EyeOff />}
-            </button>
-          </div>
-
-          <button
-            type="submit"
-            className="btn bg-white hover:bg-[#ffffffb0] text-[#2563EB] mt-4"
-          >
+          <input
+            type="password "
+            className="input bg-white text-black dark:bg-gray-300 dark:text-black"
+            {...register("password", {
+              required: true,
+              minLength: 6,
+              pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).+$/,
+            })}
+            placeholder="Password"
+          />
+          {errors.password?.type === "required" && (
+            <p className="text-red-200 text-sm font-medium mt-1">
+              Password is required
+            </p>
+          )}
+          {errors.password?.type === "minLength" && (
+            <p className="text-red-200 text-sm font-medium mt-1">
+              Password must be 6 characters or longer
+            </p>
+          )}
+          {errors.password?.type === "pattern" && (
+            <p className="text-red-200 text-sm font-medium mt-1">
+              Password doesn't contain enough requirements
+            </p>
+          )}
+          <button type="submit" className="btn btn-neutral mt-4">
             Register
           </button>
-
-          <p className="text-[15px] text-center mt-2 font-medium">
-            Already have an account?{" "}
-            <Link to={"/auth/login"} className="text-black">
-              Login
-            </Link>
-          </p>
-
-          <p className="text-center font-medium text-[15px]">Or</p>
-
-          {/* Google Sign-In */}
-          <button
-            onClick={handleGoogle}
-            type="button"
-            className="btn border border-blue-200 bg-white hover:bg-gray-200 text-black"
-          >
-            <svg
-              aria-label="Google logo"
-              width="16"
-              height="16"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 512 512"
-            >
-              <g>
-                <path d="m0 0H512V512H0" fill="#fff"></path>
-                <path
-                  fill="#34a853"
-                  d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"
-                ></path>
-                <path
-                  fill="#4285f4"
-                  d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"
-                ></path>
-                <path
-                  fill="#fbbc02"
-                  d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"
-                ></path>
-                <path
-                  fill="#ea4335"
-                  d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"
-                ></path>
-              </g>
-            </svg>
-            Login with Google
-          </button>
-        </form>
-      </div>
-    </motion.div>
+        </fieldset>
+        <p className="font-medium">
+          Already have an account?{" "}
+          <Link className=" font-semibold" to={"/auth/login"}>
+            Login
+          </Link>
+        </p>
+      </form>
+      <SocialLogin></SocialLogin>
+      </motion.div>
   );
 };
 

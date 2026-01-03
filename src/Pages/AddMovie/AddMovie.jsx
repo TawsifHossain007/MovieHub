@@ -3,9 +3,11 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router";
 
 const AddMovie = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate()
 
   const handleAddMovie = async (e) => {
     e.preventDefault();
@@ -36,6 +38,7 @@ const AddMovie = () => {
           icon: "success",
           confirmButtonText: "OK",
         });
+        navigate('/dashboard/myCollection')
         form.reset();
       }
     } catch (error) {
@@ -62,7 +65,7 @@ const AddMovie = () => {
 
   return (
     <motion.div
-      className="max-w-2xl mx-auto p-6 bg-base-200 rounded-xl shadow-lg mt-10 mb-20"
+      className="max-w-2xl mx-auto p-6 bg-gray-300 rounded-xl shadow-lg mt-10 mb-20"
       initial="initial"
       animate="animate"
       exit="exit"

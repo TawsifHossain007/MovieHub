@@ -73,13 +73,14 @@ const MyWishlist = () => {
 
   return (
     <motion.div
-      className="bg-base-100 min-h-screen"
+      className="min-h-screen py-5"
       initial="initial"
       animate="animate"
       exit="exit"
       variants={pageVariants}
       transition={pageTransition}
     >
+      
       <div className="w-11/12 mx-auto">
         <div className="overflow-x-auto">
           <table className="table">

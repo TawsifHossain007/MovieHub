@@ -25,7 +25,10 @@ const Home = () => {
             variants={pageVariants}
             transition={pageTransition}
         >
-            <Banner />
+            <div className='flex items-center justify-center mt-5'>
+                <Banner />
+            </div>
+            
             <Stats />
         </motion.div>
     );

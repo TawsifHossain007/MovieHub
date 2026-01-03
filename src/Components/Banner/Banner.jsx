@@ -23,11 +23,15 @@ const Banner = () => {
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % movies.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [movies]);
+  if (movies.length === 0) return;
+
+  const interval = setInterval(() => {
+    setCurrentIndex((prev) => (prev + 1) % movies.length);
+  }, 4000);
+
+  return () => clearInterval(interval);
+}, [movies.length]);
+
 
   if (loading) {
     return (
@@ -47,7 +51,7 @@ const Banner = () => {
   const currentMovie = movies[currentIndex];
 
   return (
-    <div className="relative w-full h-[500px] overflow-hidden rounded-2xl shadow-lg">
+    <div className="relative z-0 w-8/12 h-[500px] overflow-hidden rounded-2xl shadow-lg">
       <AnimatePresence>
         <motion.img
           key={currentMovie._id}
@@ -61,7 +65,7 @@ const Banner = () => {
         />
       </AnimatePresence>
 
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent flex flex-col justify-end p-8 text-white">
+      <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/30 to-transparent flex flex-col justify-end p-8 text-white">
         <motion.div
           key={currentMovie.title}
           initial={{ y: 30, opacity: 0 }}

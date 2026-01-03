@@ -2,10 +2,22 @@ import axios from "axios";
 import React, { useState } from "react";
 import MovieCard from "../MovieCard/MovieCard";
 import { Link } from "react-router";
+import { useQuery } from "@tanstack/react-query";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const Stats = () => {
   const [stats, setStats] = useState([]);
   const [latest, setLatest] = useState([]);
+  const axiosSecure = useAxiosSecure()
+
+  
+    const {data: users = []} = useQuery({
+      queryKey: ["users"],
+      queryFn: async()=> {
+        const res = await axiosSecure.get("/users")
+        return res.data
+      }
+    })
 
   const genres = [
     { name: "Action", color: "from-red-500 to-orange-500", emoji: "💥" },
@@ -40,17 +52,18 @@ const Stats = () => {
       console.log(err);
     });
 
+
   return (
     <div className="w-11/12 mx-auto mt-20">
       <div className=" flex flex-col md:flex-row items-center justify-center gap-5">
         <div>
-          <h1 className="p-10 bg-gradient-to-br from-[#2005ee] via-[#09e8b4fd] to-[#05e9e9] rounded-2xl text-white py-20 font-semibold text-4xl md:text-5xl">
+          <h1 className="p-10 bg-linear-to-br from-[#2005ee] via-[#09e8b4fd] to-[#05e9e9] rounded-2xl text-white py-20 font-semibold text-4xl md:text-5xl">
             Total Movies: {stats.length}
           </h1>
         </div>
         <div>
-          <h1 className="p-10 bg-gradient-to-br from-[#05e9e9] via-[#09e8b4fd] to-[#2005ee] rounded-2xl text-white py-20 font-semibold text-4xl md:text-5xl">
-            Total Users: 13
+          <h1 className="p-10 bg-linear-to-br from-[#05e9e9] via-[#09e8b4fd] to-[#2005ee] rounded-2xl text-white py-20 font-semibold text-4xl md:text-5xl">
+            Total Users: {users.length}
           </h1>
         </div>
       </div>
@@ -105,7 +118,7 @@ const Stats = () => {
           {genres.map((genre, idx) => (
             <div
               key={idx}
-              className={`w-full text-white font-semibold rounded-2xl py-10 shadow-lg bg-gradient-to-br ${genre.color} hover:scale-105 transition-transform duration-300`}
+              className={`w-full text-white font-semibold rounded-2xl py-10 shadow-lg bg-linear-to-br ${genre.color} hover:scale-105 transition-transform duration-300`}
             >
               <div className="text-5xl mb-2">{genre.emoji}</div>
               <p className="text-lg">{genre.name}</p>

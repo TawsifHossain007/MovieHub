@@ -18,6 +18,10 @@ import AddMovie from "./Pages/AddMovie/AddMovie";
 import UpdateMovie from "./Pages/UpdateMovie/UpdateMovie";
 import MyCollection from "./Pages/MyCollection";
 import PrivateRoute from "./Components/PrivateRoute/PrivateRoute";
+import DashboardLayout from "./Layout/DashboardLayout";
+import DashboardHome from "./Pages/DashboardHome/DashboardHome";
+import MyProfile from "./Pages/MyProfile/MyProfile";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const router = createBrowserRouter([
   {
@@ -34,26 +38,20 @@ const router = createBrowserRouter([
         path: "/allMovies",
         Component: AllMovies,
       },
-      {
-        path: "/MyWishlist",
-        Component: MyWishlist,
-      },
+
       {
         path: "/movieDetails/:id",
-        Component: MovieDetails
+        Component: MovieDetails,
       },
-      {
-        path: "/addMovie",
-        element: <PrivateRoute><AddMovie></AddMovie></PrivateRoute>
-      },
+
       {
         path: "/movies/update/:id",
-        element: <PrivateRoute><UpdateMovie></UpdateMovie></PrivateRoute>
+        element: (
+          <PrivateRoute>
+            <UpdateMovie></UpdateMovie>
+          </PrivateRoute>
+        ),
       },
-      {
-        path: "/myCollection",
-        element: <PrivateRoute><MyCollection></MyCollection></PrivateRoute>
-      }
     ],
   },
   {
@@ -70,14 +68,46 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "/dashboard",
+    element: (
+      <PrivateRoute>
+        <DashboardLayout></DashboardLayout>
+      </PrivateRoute>
+    ),
+    children: [
+      {
+        index: true,
+        Component: DashboardHome,
+      },
+      {
+        path: "my-profile",
+        Component: MyProfile,
+      },
+      {
+        path: "myWishlist",
+        Component: MyWishlist,
+      },
+      {
+        path: "addMovie",
+        Component: AddMovie,
+      },
+      {
+        path: "myCollection",
+        Component: MyCollection,
+      },
+    ],
+  },
 ]);
 
+const queryClient = new QueryClient()
+
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <AuthProvider>
-      <ThemeProvider>
-        <RouterProvider router={router} />
-      </ThemeProvider>
-    </AuthProvider>
-  </StrictMode>
+  <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <ThemeProvider>
+          <RouterProvider router={router} />
+        </ThemeProvider>
+      </AuthProvider>
+  </QueryClientProvider>
 );
